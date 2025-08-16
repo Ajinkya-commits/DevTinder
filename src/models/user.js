@@ -33,20 +33,22 @@ const userSchema = new mongoose.Schema(
     },
     skills: {
       type: [String],
-      validate(value) {
-        if (!Array.isArray(value) || value.length === 0) {
-          throw new Error("Skills must be a non-empty array.");
-        }
-
-        if (value.length > 10) {
-          throw new Error("You can add up to 10 skills only.");
-        }
-
-        for (let skill of value) {
-          if (typeof skill !== "string" || skill.trim().length === 0) {
-            throw new Error("Each skill must be a non-empty string.");
+      default: undefined, 
+      validate: {
+        validator: function (value) {
+          if (value === undefined) return true;
+          if (!Array.isArray(value)) return false;
+          if (value.length === 0)
+            throw new Error("Skills must be a non-empty array.");
+          if (value.length > 10)
+            throw new Error("You can add up to 10 skills only.");
+          for (let skill of value) {
+            if (typeof skill !== "string" || skill.trim().length === 0) {
+              throw new Error("Each skill must be a non-empty string.");
+            }
           }
-        }
+          return true;
+        },
       },
     },
 
@@ -86,16 +88,16 @@ userSchema.methods.getJWT = async function () {
   return token;
 };
 
-userSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) return next();
+// userSchema.pre("save", async function (next) {
+//   if (!this.isModified("password")) return next();
 
-  try {
-    const salt = await bcrypt.genSalt(10);
-    this.password = await bcrypt.hash(this.password, salt);
-    next();
-  } catch (err) {
-    next(err);
-  }
-});
+//   try {
+//     const salt = await bcrypt.genSalt(10);
+//     this.password = await bcrypt.hash(this.password, salt);
+//     next();
+//   } catch (err) {
+//     next(err);
+//   }
+// });
 
 module.exports = mongoose.model("User", userSchema);

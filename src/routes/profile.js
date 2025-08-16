@@ -1,6 +1,5 @@
 const express = require("express");
 const { userAuth } = require("../middleware/auth");
-const User = require("../models/user");
 const profileRouter = express.Router();
 const { validateEditProfileData } = require("../utils/validation");
 
@@ -43,7 +42,7 @@ profileRouter.patch("/profile/edit", userAuth, async (req, res) => {
   }
 });
 
-profileRouter.post("/ password", userAuth, async (req, res) => {
+profileRouter.post("/profile/password", userAuth, async (req, res) => {
   try {
     const user = req.user;
     const { currentPassword, newPassword } = req.body;
