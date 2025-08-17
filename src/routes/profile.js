@@ -3,22 +3,13 @@ const { userAuth } = require("../middleware/auth");
 const profileRouter = express.Router();
 const { validateEditProfileData } = require("../utils/validation");
 
-profileRouter.get("/profile", userAuth, async (req, res) => {
+profileRouter.get("/profile/view", userAuth, async (req, res) => {
   try {
     const user = req.user;
     res.send(user);
   } catch (error) {
     console.error("Error adding user:", error);
     res.status(400).send("Error saving the user:" + error.message);
-  }
-});
-
-profileRouter.get("/profile/view", userAuth, async (req, res) => {
-  try {
-    const user = req.user;
-    res.send(user);
-  } catch (error) {
-    res.status(400).send("Error :" + error.message);
   }
 });
 
