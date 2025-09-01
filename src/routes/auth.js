@@ -11,7 +11,7 @@ authRouter.post("/signup", async (req, res) => {
     validateSignUpData(req);
     //encrypt the password
 
-    const { firstName, lastName, email, password } = req.body;
+    const { firstName, lastName, email, password, photoUrl } = req.body;
     const passwordHash = await bcrypt.hash(password, 10);
     //creating a new instance of the user model
 
@@ -20,6 +20,7 @@ authRouter.post("/signup", async (req, res) => {
       lastName,
       email,
       password: passwordHash,
+      photoUrl,
     });
 
     await user.save();
@@ -45,7 +46,7 @@ authRouter.post("/login", async (req, res) => {
       const token = await user.getJWT();
 
       res.cookie("token", token);
-      res.send("Login Successfully!!!.");
+      res.send(user);
     } else {
       throw new Error("Invalid Credentials");
     }
@@ -61,9 +62,5 @@ authRouter.post("/logout", async (req, res) => {
 
   res.send("Logout Successfull");
 });
-
-
-
-
 
 module.exports = authRouter;
