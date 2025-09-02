@@ -2,16 +2,27 @@ const express = require("express");
 const { userAuth } = require("../middleware/auth");
 const profileRouter = express.Router();
 const { validateEditProfileData } = require("../utils/validation");
+const cors = require("cors");
 
-profileRouter.get("/profile/view", userAuth, async (req, res) => {
-  try {
-    const user = req.user;
-    res.send(user);
-  } catch (error) {
-    console.error("Error adding user:", error);
-    res.status(400).send("Error saving the user:" + error.message);
+const corsOptions = {
+  origin: "http://localhost:5173",
+  credentials: true,
+};
+
+profileRouter.get(
+  "/profile/view",
+  cors(corsOptions),
+  userAuth,
+  async (req, res) => {
+    try {
+      const user = req.user;
+      res.send(user);
+    } catch (error) {
+      console.error("Error adding user:", error);
+      res.status(400).send("Error saving the user:" + error.message);
+    }
   }
-});
+);
 
 profileRouter.patch("/profile/edit", userAuth, async (req, res) => {
   try {
